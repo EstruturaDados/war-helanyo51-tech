@@ -1,0 +1,149 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define TAM_FILA 5
+
+// -------------------------------------------------------------
+// Struct que representa uma peça do Tetris
+// -------------------------------------------------------------
+typedef struct {
+    char nome;   // I, O, T, L
+    int id;      // identificador único
+} Peca;
+
+
+// -------------------------------------------------------------
+// Gerar uma nova peça automaticamente
+// -------------------------------------------------------------
+Peca gerarPeca(int id) {
+    Peca p;
+    char tipos[4] = {'I', 'O', 'T', 'L'};
+    p.nome = tipos[rand() % 4];
+    p.id = id;
+    return p;
+}
+
+
+// -------------------------------------------------------------
+// Verifica se a fila está cheia
+// -------------------------------------------------------------
+int filaCheia(int inicio, int fim, int quantidade) {
+    return quantidade == TAM_FILA;
+}
+
+// -------------------------------------------------------------
+// Verifica se a fila está vazia
+// -------------------------------------------------------------
+int filaVazia(int quantidade) {
+    return quantidade == 0;
+}
+
+
+// -------------------------------------------------------------
+// Inserir peça no final da fila (enqueue)
+// -------------------------------------------------------------
+void enqueue(Peca fila[], int *fim, int *quantidade, int *idGlobal) {
+    if (filaCheia(0, 0, *quantidade)) {
+        printf("\n⚠️  A fila está cheia! Não é possível inserir mais peças.\n");
+        return;
+    }
+
+    Peca nova = gerarPeca((*idGlobal)++);
+    fila[*fim] = nova;
+
+    *fim = (*fim + 1) % TAM_FILA;
+    (*quantidade)++;
+
+    printf("\n✅ Peça [%c %d] adicionada à fila!\n", nova.nome, nova.id);
+}
+
+
+// -------------------------------------------------------------
+// Remover peça da frente da fila (dequeue)
+// -------------------------------------------------------------
+void dequeue(Peca fila[], int *inicio, int *quantidade) {
+    if (filaVazia(*quantidade)) {
+        printf("\n⚠️  Não há peças para jogar! Fila vazia.\n");
+        return;
+    }
+
+    Peca removida = fila[*inicio];
+    *inicio = (*inicio + 1) % TAM_FILA;
+    (*quantidade)--;
+
+    printf("\n🎮 Peça jogada: [%c %d]\n", removida.nome, removida.id);
+}
+
+
+// -------------------------------------------------------------
+// Exibir a fila de peças
+// -------------------------------------------------------------
+void exibirFila(Peca fila[], int inicio, int quantidade) {
+    printf("\n========== FILA DE PEÇAS ==========\n");
+
+    if (quantidade == 0) {
+        printf("Fila vazia.\n");
+        return;
+    }
+
+    int index = inicio;
+    for (int i = 0; i < quantidade; i++) {
+        printf("[%c %d] ", fila[index].nome, fila[index].id);
+        index = (index + 1) % TAM_FILA;
+    }
+
+    printf("\n===================================\n");
+}
+
+
+// -------------------------------------------------------------
+// Função principal com menu
+// -------------------------------------------------------------
+int main() {
+    srand(time(NULL));
+
+    Peca fila[TAM_FILA];
+    int inicio = 0, fim = 0, quantidade = 0;
+    int idGlobal = 0;
+
+    // Inicializa com 5 peças
+    for (int i = 0; i < TAM_FILA; i++) {
+        fila[fim] = gerarPeca(idGlobal++);
+        fim = (fim + 1) % TAM_FILA;
+        quantidade++;
+    }
+
+    int opcao;
+
+    do {
+        exibirFila(fila, inicio, quantidade);
+
+        printf("\n========== MENU ==========\n");
+        printf("1 - Jogar peça (dequeue)\n");
+        printf("2 - Inserir nova peça (enqueue)\n");
+        printf("0 - Sair\n");
+        printf("Escolha: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                dequeue(fila, &inicio, &quantidade);
+                break;
+
+            case 2:
+                enqueue(fila, &fim, &quantidade, &idGlobal);
+                break;
+
+            case 0:
+                printf("\nSaindo do sistema...\n");
+                break;
+
+            default:
+                printf("\n❌ Opção inválida!\n");
+        }
+
+    } while (opcao != 0);
+
+    return 0;
+}
