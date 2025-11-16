@@ -1,1 +1,105 @@
+/*
+ * Nível Novato - Struct + Vetor Estático
+ * Cadastro de 5 territórios com nome, cor e tropas.
+ */
 
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_TERRITORIOS 5
+#define MAX_NOME 30
+#define MAX_COR 10
+
+// Definição da struct Territorio
+typedef struct {
+    char nome[MAX_NOME];
+    char cor[MAX_COR];
+    int tropas;
+} Territorio;
+
+// Remove o 
+ do fgets
+void trim(char *s){
+    size_t l = strlen(s);
+    if(l>0 && s[l-1]=='
+') s[l-1] = '
+/*
+/*
+printf("TERRITÓRIO CONQUISTADO!
+");
+t[def].tropas = 1;
+strcpy(t[def].cor, t[at].cor);
+}
+
+
+} else if (dadoAt < dadoDef) {
+printf("Defensor vence! Atacante perde 1 tropa.
+");
+t[at].tropas--;
+} else {
+printf("Empate! Nada acontece.
+");
+}
+}
+
+
+int verificarMissao(Territorio *t) {
+int conquistados = 0;
+for (int i = 0; i < QTD; i++) {
+if (strcmp(t[i].cor, "Verde") != 0)
+conquistados++;
+}
+if (conquistados >= 3) return 1;
+return 0;
+}
+
+
+// -------------------------------
+// MENU
+// -------------------------------
+int main() {
+srand(time(NULL));
+
+
+Territorio *mapa = criarTerritorios();
+getchar();
+cadastrar(mapa);
+
+
+int op;
+do {
+printf("
+===== MENU =====
+");
+printf("1 - Atacar
+");
+printf("2 - Verificar Missão
+");
+printf("0 - Sair
+Escolha: ");
+scanf("%d", &op);
+getchar();
+
+
+switch (op) {
+case 1:
+atacar(mapa);
+exibirMapa(mapa);
+break;
+case 2:
+if (verificarMissao(mapa))
+printf("
+VOCÊ COMPLETOU A MISSÃO!
+");
+else
+printf("
+Missão ainda não concluída.
+");
+break;
+}
+} while (op != 0);
+
+
+free(mapa);
+return 0;
+}
